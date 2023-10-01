@@ -1,0 +1,66 @@
+@startuml
+
+hide footbox
+title DPP Flow
+
+actor Sender
+actor Receiver
+box "Node"
+    boundary mAPI
+    control bitcoind
+end box
+
+note over Sender: Sender wants to buy something from Receiver
+
+autonumber
+Sender-->Receiver: create basket of goods
+Receiver->Receiver: create invoice (X satoshis, etc.)
+Receiver->Receiver: display invoice [pay:url] \n(QR code or Bitcoin URI)
+
+Receiver-->Sender: obtain payment protocol URL \n(scan QR code or click link)
+
+group Direct Payment Procotol (DPP)
+  Sender-[#red,bold]>Receiver: Request Payment Terms
+
+  ' group if no un-expired quote available
+  ' Receiver-->mAPI ++: GET policyQuote() \n(if no un-expired quote available)
+  ' autonumber stop
+  ' mAPI -\ bitcoind
+  ' mAPI \- bitcoind
+  ' autonumber 7
+  ' return policyQuote Response
+  ' end
+
+  ' Receiver->Receiver: construct Payment Request arguments \n(destinations, fees, etc.)
+
+  Receiver-[#red,bold]>Sender: Payment Terms
+
+  Sender->Sender: Authorize? (click "OK")
+
+  Sender-[#red,bold]>Receiver: Payment
+
+  Receiver->Receiver: Validate Payment
+
+  alt Invalid Tx
+
+    Receiver->Sender: reject payment (error)
+
+  else Valid Tx
+    
+    autonumber 14
+    Receiver->mAPI ++: POST submitTransaction(Tx)
+    autonumber stop
+    mAPI -\ bitcoind
+    mAPI \- bitcoind
+    autonumber 15
+    return transactionResponse
+
+    Receiver-[#red,bold]>Sender: Payment ACK
+
+    ' mAPI->Receiver: Merkle Proof
+    ' mAPI->Sender: Merkle Proof
+
+  end
+
+end
+@enduml

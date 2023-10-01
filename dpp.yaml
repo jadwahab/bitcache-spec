@@ -1,0 +1,376 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  description: A protocol for communication between a payment host (usually either a
+    beneficiary, a payment processor, or simply the recipient's wallet) and their
+    customer (the sender of the funds), enabling both a better customer
+    experience, simpler wallet infrastructure, more advanced features such as
+    multiple outputs, and better security against man-in-the-middle attacks on
+    the payment process.
+  license:
+    name: ISC
+    url: https://tsc.bitcoinassociation.net_based_payments/
+  title: Direct Payment Protocol (DPP)
+  version: 0.0.1
+paths:
+  "/api/v1/payment/{paymentID}":
+    get:
+      description: Request the payment terms for a specific payment id which includes all the data necessary in order to create the requested payment properly.
+      summary: Request the PaymentTerms message for a specific payment id (the identifier for a the payment).
+      tags:
+        - Payment Terms
+      parameters:
+        - description: Payment ID
+          in: path
+          name: paymentID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: contains outputs, beneficiary data and expiry information, used by the
+            payee to construct a transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/dpp.PaymentTerms"
+        "404":
+          description: returned if the paymentID has not been found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/server.ClientError"
+        "500":
+          description: returned if there is an unexpected internal error
+          content:
+            application/json:
+              schema:
+                type: string
+
+    post:
+      description: Send a payment based on a payment id (the identifier for an payment) and receive a PaymentACK in response to a successful Payment.
+      summary: Submit an Payment message including the transcation(s) along with other information that is validated before being broadcast to the network.
+      tags:
+        - Payment
+      parameters:
+        - description: Payment ID
+          in: path
+          name: paymentID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/dpp.Payment"
+        description: payment message used in BIP270
+        required: true
+      responses:
+        "201":
+          description: if success, error code will be empty, otherwise it will be filled in
+            with reason
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/dpp.PaymentACK"
+        "400":
+          description: returned if the sender input is invalid, usually an issue with the
+            paymentID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/server.ClientError"
+        "404":
+          description: returned if the paymentID has not been found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/server.ClientError"
+        "500":
+          description: returned if there is an unexpected internal error
+          content:
+            application/json:
+              schema:
+                type: string
+
+servers:
+  - url: //localhost:8445
+components:
+  schemas:
+    dpp.PaymentTerms:
+      type: object
+      properties:
+        network:
+          description: Determines which Bitcoin network to be used
+          enum:
+            - mainnet
+            - testnet
+            - stn
+            - regtest
+          example: mainnet
+          type: string
+        creationTimestamp:
+          description: ISO timestamp
+          example: 2019-10-12T07:20:50.52Z
+          type: string
+        expirationTimestamp:
+          description: ISO timestamp
+          example: 2019-10-12T07:20:50.52Z
+          type: string
+        paymentUrl:
+          description: Secure HTTPS location where a Payment message should be sent. Maximum length is 4000 characters
+          example: https://localhost:3443/api/v1/payment/123456
+          type: string
+        modes:
+          description: Determines the mode (or multiple options) which the recipient will accept as payment - must supply at least 1.
+          type: object
+          properties:
+            50a57d5b03d9:
+              $ref: "#/components/schemas/pm.Legacy-PaymentTerms"
+        memo:
+          nullable: true
+          type: string
+          description: Open use, likely to be displayed when customer is approving the payment
+        beneficiary:
+          nullable: true
+          type: object
+          properties:
+            name:
+              description: Name is a human readable string identifying the beneficiary.
+              example: beneficiary 1
+              type: string
+            avatar:
+              description: AvatarURL displays a canonical url to a beneficiarys avatar.
+              example: http://url.com
+              type: string
+            extensions:
+              additionalProperties: true
+              description: Extensions can be supplied if the beneficiary wishes to send some
+                arbitrary data back to the wallet.
+              type: object
+              properties:
+                email:
+                  description: Email can be sued to contact the beneficiary about this transaction.
+                  example: beneficiary@m.com
+                  type: string
+                address:
+                  description: Address is the beneficiarys store / head office address.
+                  example: 1 the street, the town, B1 1AA
+                  type: string
+
+    dpp.Payment:
+      type: object
+      properties:
+        modeId:
+          description: Selects from dictionary of options within PaymentTerms.requirements
+          type: string
+        mode:
+          $ref: "#/components/schemas/pm.Legacy-Payment"
+        originator:
+          nullable: true
+          type: object
+          properties:
+            name:
+              description: legal person making the payment
+              nullable: true
+              type: string
+            paymail:
+              description: paymail for issuing refunds
+              nullable: true
+              type: string
+            avatarUrl:
+              description: url to an image
+              nullable: true
+              type: string
+
+    dpp.PaymentACK:
+      properties:
+        modeId:
+          description: Selects from dictionary of options within PaymentTerms.requirements
+          type: string
+        mode:
+          $ref: "#/components/schemas/pm.Legacy-PaymentAck"
+        peer_channel:
+          nullable: true
+          properties:
+            host:
+              description: peer channel host domain or IP address
+              type: string
+            path:
+              description: peer channel host URL path
+              type: string
+            token:
+              description: token used to authenticate the connection
+              type: string
+            id:
+              description: the identifier of the channel to connect to
+              type: string
+          type: object
+
+    dpp.SecurePaymentTerms:
+      type: object
+      properties:
+        payload:
+          type: string
+          example: '{"network":"mainnet","creationTimestamp":{},"expirationTimestamp":{},"url":"https://localhost:3443/api/v1/payment/123456","memo":"string","beneficiary":{"name":"beneficiary 1","avatar":"http://url.com","extensions":{"email":"beneficiary@m.com","address":"1 the street, the town, B1 1AA","additionalProp1":{}}},"outputs":[{"amount":100000,"script":"76a91455b61be43392125d127f1780fb038437cd67ef9c88ac","description":"paymentReference 123456"}],"fees":{"data":{"satoshis":0,"bytes":0},"standard":{"satoshis":0,"bytes":0}},"ancestry":{"format":"binary","minDepth":0}}'
+        signature:
+          type: string
+          example: 3044022004cf2c5711f34f0de11fd316074c44ce0f63a525840aae0cf61d9dee04b317b102201a56049354449ddce3d8b059403b2d866662b6d1f9d0064365d420406d8d992d
+        publicKey:
+          type: string
+          example: 03d546057437f3279f66d6ae91a03ffe1120ef3a79b8f186d9b6a8f1e0582ccf78
+        encoding:
+          type: string
+          example: UTF-8
+        mimetype:
+          type: string
+          example: application/json
+
+    pm.Legacy-PaymentTerms:
+      type: object
+      properties:
+        outputs:
+          type: array
+          items:
+            properties:
+              amount:
+                description: Amount is the number of satoshis to be paid.
+                example: 100000
+                type: integer
+              script:
+                description: Script is a locking script where payment should be sent, formatted
+                  as a hexadecimal string.
+                example: 76a91455b61be43392125d127f1780fb038437cd67ef9c88ac
+                type: string
+              description:
+                description: Description, an optional description such as "tip" or "sales tax".
+                  Maximum length is 100 chars.
+                example: paymentReference 123456
+                type: string
+                nullable: true
+        fees:
+          type: object
+          properties:
+            data:
+              type: object
+              properties:
+                satoshis:
+                  type: number
+                bytes:
+                  type: number
+            standard:
+              type: object
+              properties:
+                satoshis:
+                  type: number
+                bytes:
+                  type: number
+        ancestry:
+          nullable: true
+          description: Determines the ancestors requirements that the receiver is requesting. If omitted, then the ancestors are not requested
+          type: object
+          properties:
+            format:
+              type: string
+              description: Determines the ancestors format to be sent
+              enum:
+                - binary
+                - json
+            minDepth:
+              nullable: true
+              type: integer
+              description: Determines the contenst of the ancestors to be sent. For example, the receiver can request only the parent transactions to be sent and no need to go back all the way to the anchors/proofs
+
+    pm.Legacy-Payment:
+      type: object
+      properties:
+        rawtx:
+          description: The raw transaction bytes encoded as hexadecimal in a string format
+          type: string
+        txid:
+          description: The transaction ID (TxID) of the transaction being sent
+          type: string
+          nullable: true
+        ancestors:
+          $ref: "#/components/schemas/bc.Ancestors"
+          nullable: true
+
+    pm.Legacy-PaymentAck:
+      type: object
+      properties:
+        rawtx:
+          description: The raw transaction bytes encoded as hexadecimal in a string format
+          type: string
+        txid:
+          description: The transaction ID (TxID) of the transaction being sent
+          type: string
+          nullable: true
+
+    bc.Ancestors:
+      description: Transaction ancestors as described by the TSC specfication
+      nullable: true
+      type: object
+      properties:
+        rawtx:
+          type: string
+        proof:
+          type: object
+          properties:
+            composite:
+              type: boolean
+            index:
+              type: integer
+            nodes:
+              items:
+                type: string
+              type: array
+            proofType:
+              type: string
+            target:
+              type: string
+            targetType:
+              type: string
+            txOrId:
+              type: string
+        mapiResponses:
+          type: array
+          items:
+            properties:
+              apiVersion:
+                type: string
+              blockHash:
+                type: string
+              blockHeight:
+                type: integer
+              callbackPayload:
+                type: string
+              callbackReason:
+                type: string
+              callbackTxId:
+                type: string
+              minerId:
+                type: string
+              timestamp:
+                type: string
+            type: object
+        parents:
+          additionalProperties:
+            $ref: "#/components/schemas/bc.Ancestors"
+          type: object
+
+    server.ClientError:
+      properties:
+        code:
+          example: N01
+          type: string
+        id:
+          example: e97970bf-2a88-4bc8-90e6-2f597a80b93d
+          type: string
+        message:
+          example: unable to find foo when loading bar
+          type: string
+        title:
+          example: not found
+          type: string
+      type: object
