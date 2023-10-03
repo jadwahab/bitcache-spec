@@ -10,3 +10,7 @@
 * [API Reference](reference/api-reference/README.md)
   * [⛔ Admin](reference/api-reference/admin.md)
   * [↔ Transactions](reference/api-reference/transactions.md)
+
+***
+
+* [FAQ](faq.md)
