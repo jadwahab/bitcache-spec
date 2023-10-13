@@ -1,0 +1,498 @@
+openapi: "3.0.0"
+info:
+  description: |
+    The peer channels API used to provision a peer channel, to access a peer channel and to receive notifications related to peer channels.
+  version: 1.0.0
+  title: Peer channels API
+  license:
+    name: MIT
+
+paths:
+
+  /api/v1/web-socket:
+    parameters:
+      - name: token
+        in: query
+        required: true
+        description: The master bearer token
+        schema:
+          type: string
+          default: t80Dp_dIk1kqkHK3P9R5cpDf67JfmNixNscexEYG0_xaCbYXKGNm4V_2HKr68ES5bytZ8F19IS0XbJlq41accQ==
+    get:
+      summary: General-purpose websocket
+      description: |
+        Subscribe to all websocket notifications for an account. This will provide all notifications
+        related to peer channels managed by the given account, and remove the need to subscribe to
+        a websocket for each channel individually.
+
+        Authentication is performed using the query parameter ?token="master bearer token" which is the
+        master bearer token for the account. This is intentionally not performed using http headers as
+        javascript and browser clients often do not have the ability to provide headers to websockets.
+
+        At present these notification types are supported:
+
+        Peer Channels notifications
+        - message_type: bsv.api.channels.notification
+        - result: Peer channel notification (example below)
+
+      security: []
+      tags:
+        - General Websocket
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralNotification"
+
+
+  # Peer Channels APIs
+
+  /api/v1/channel/manage/list:
+    get:
+      summary: List all Peer Channels
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Channel Management APIs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channels"
+
+  /api/v1/channel/manage/{channelid}:
+    parameters:
+      - name: channelid
+        in: path
+        required: true
+        description: The url safe, base64 encoded external channel id
+        schema:
+          type: string
+          format: url_safe_base64
+    get:
+      summary: Get single channel details
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Channel Management APIs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+
+    post:
+      summary: Update single channel details
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Channel Management APIs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChannelAmended"
+
+    delete:
+      summary: Delete a channel
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Channel Management APIs
+      responses:
+        '200':
+          description: Success
+
+  /api/v1/channel/manage/:
+    post:
+      summary: Create a new Peer Channel
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Channel Management APIs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateChannelRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+
+  /api/v1/channel/manage/{channelid}/api-token/{tokenid}:
+    parameters:
+      - name: channelid
+        in: path
+        required: true
+        description: The url safe, base64 encoded external channel id
+        schema:
+          type: string
+          format: url_safe_base64
+      - name: tokenid
+        in: path
+        required: true
+        description: The url safe, base64 encoded API Bearer token for the selected channel
+        schema:
+          type: string
+    get:
+      summary: Get token details
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Token Management APIs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessToken"
+
+    delete:
+      summary: Revoke selected token
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Token Management APIs
+      responses:
+        '200':
+          description: Success
+
+  /api/v1/channel/manage/{channelid}/api-token:
+    parameters:
+      - name: channelid
+        in: path
+        required: true
+        description: The url safe, base64 encoded external channel id
+        schema:
+          type: string
+          format: url_safe_base64
+    get:
+      parameters:
+        - name: token
+          in: query
+          required: false
+          description: Optional filter for searching certain token
+          schema:
+            type: string
+      summary: Get a list of tokens for the selected channel
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Token Management APIs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessTokens"
+
+    post:
+      summary: Create a new token for the selected channel
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Token Management APIs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccessTokenRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessToken"
+
+  /api/v1/channel/{channelid}:
+    parameters:
+      - name: channelid
+        in: path
+        required: true
+        description: The url safe, base64 encoded external channel id
+        schema:
+          type: string
+          format: url_safe_base64
+    post:
+      parameters:
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+          description: For example 'application/octet-stream' or 'application/json'
+          required: true
+      summary: Write message to channel
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Message management APIs
+      description: |
+        The payload is always written in the request body in
+        binary encoded format but the 'Content-Type' header
+        instructs the recient how to decode the message.
+      requestBody:
+        content:
+            application/json:
+              schema:
+                type: object
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+    head:
+      summary: Get max sequence number of channel
+      description: |
+        Get max sequence number of channel. The max sequence number is returned in the response
+        header's 'ETag' key.
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Message management APIs
+      responses:
+        '200':
+          description: Success
+          headers:
+            ETag:
+              schema:
+                type: integer
+              description: Max Sequence.
+
+    get:
+      parameters:
+        - in: query
+          name: unread
+          schema:
+            type: boolean
+          required: false
+      summary: Get messages from channel
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Message management APIs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+
+  /api/v1/channel/{channelid}/{sequence}:
+    parameters:
+      - name: channelid
+        in: path
+        required: true
+        description: The url safe, base64 encoded external channel id
+        schema:
+          type: string
+          format: url_safe_base64
+      - name: sequence
+        in: path
+        required: true
+        description: The sequence number of the message of interest
+        schema:
+          type: integer
+    post:
+      parameters:
+        - in: query
+          name: older
+          schema:
+            type: boolean
+          required: false
+          description: Optional parameter to mark also all older messages
+      summary: Mark messages as read or unread
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Message management APIs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                read:
+                  type: boolean
+      responses:
+        '200':
+          description: Success
+
+    delete:
+      summary: Delete messages from channel
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Peer Channels - Message management APIs
+      responses:
+        '200':
+          description: Success
+
+  /api/v1/channel/{channelid}/notify:
+    parameters:
+      - name: channelid
+        in: path
+        required: true
+        description: The url safe, base64 encoded external channel id
+        schema:
+          type: string
+    get:
+      summary: Subscribe to websocket notifications for new messages
+      security: [ ]
+      tags:
+        - Peer Channels - Websocket API
+      responses:
+        '200':
+          description: Subscribe to websocket notifications for new messages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: url_safe bas64
+
+  schemas:
+    NotImplementedYet:
+      type: string
+      default: "response body documentation not added yet"
+    CreateChannelRequest:
+      type: object
+      properties:
+        public_read:
+          type: boolean
+        public_write:
+          type: boolean
+        sequenced:
+          type: boolean
+        retention:
+          $ref: "#/components/schemas/Retention"
+    ChannelAmended:
+      type: object
+      properties:
+        public_read:
+          type: boolean
+        public_write:
+          type: boolean
+        locked:
+          type: boolean
+    Channel:
+      type: object
+      properties:
+        id:
+          type: string
+        href:
+          type: string
+        public_read:
+          type: boolean
+        public_write:
+          type: boolean
+        sequenced:
+          type: boolean
+        locked:
+          type: boolean
+        head:
+          type: integer
+        retention:
+          $ref: "#/components/schemas/Retention"
+        access_tokens:
+          $ref: "#/components/schemas/AccessTokens"
+    Retention:
+      type: object
+      properties:
+        min_age_days:
+          type: integer
+        max_age_days:
+          type: integer
+        auto_prune:
+          type: boolean
+    CreateAccessTokenRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          minLength: 0
+          maxLength: 1024
+        can_read:
+          type: boolean
+        can_write:
+          type: boolean
+    AccessTokens:
+      type: array
+      items:
+        $ref: "#/components/schemas/AccessToken"
+    AccessToken:
+      type: object
+      properties:
+        id:
+          type: integer
+        token:
+          type: string
+        description:
+          type: string
+        can_read:
+          type: boolean
+        can_write:
+          type: boolean
+    APIKeyResponse:
+      type: object
+      properties:
+        public_key_hex:
+          type: string
+        api_key:
+          type: string
+    Channels:
+      type: object
+      properties:
+        channels:
+          type: array
+          items:
+            $ref: "#/components/schemas/Channel"
+    GeneralNotification:
+      type: object
+      properties:
+        message_type:
+          type: string
+        result:
+          type: object
+      example:
+        message_type: "bsv.api.channels.notification"
+        result:
+          id: HwFd6t4R3qzCMvVqUz6beTf_RJScKOBtFBZaiciZYoPVAaWrJ95_Umr61OdVkYaSj8kjH5PNMy2PMDinGf8-MA==
+          notification: New message arrived
+    Message:
+      type: object
+      properties:
+        sequence:
+          type: integer
+        received:
+          type: string
+          format: date-time
+        content_type:
+          type: string
+        payload:
+          type: string
