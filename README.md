@@ -1,12 +1,18 @@
 # Welcome!
 
-## WTF is BitCache?
+## What is BitCache?
 
 BitCache is basically just a cache of your onchain data that you own and can control but also share with and across any wallet or Bitcoin app.
 
+## How does it work?
+
+{% content-ref url="bitcache/" %}
+[bitcache](bitcache/)
+{% endcontent-ref %}
+
 ## Want to jump right in?
 
-Feeling like an eager beaver? Jump in to the quick start docs and get making your first request:
+Jump in to the quick start docs and start integrating your wallet or app with BitCache:
 
 {% content-ref url="quick-start.md" %}
 [quick-start.md](quick-start.md)

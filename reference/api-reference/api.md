@@ -1,3 +1,7 @@
+---
+description: Coming soon
+---
+
 # API
 
 {% swagger src="https://raw.githubusercontent.com/jadwahab/bitcache-spec/docs/bitcache-api.yaml" path="/api/v1/web-socket" method="get" %}
