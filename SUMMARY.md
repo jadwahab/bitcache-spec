@@ -5,7 +5,6 @@
   * [Background](bitcache/background.md)
   * [Data Curation Vs. Data Ownership](bitcache/data-curation-vs.-data-ownership.md)
   * [System Architecture](bitcache/system-architecture.md)
-  * [Integration](bitcache/integration.md)
 * [Quick Start](quick-start.md)
 
 ## Reference
