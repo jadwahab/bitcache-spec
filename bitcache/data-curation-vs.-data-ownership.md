@@ -12,7 +12,7 @@ For example, with wallets this would be the interface displaying the transaction
 
 In Web2, all applications are separated walled gardens with hacky bridges and integrations at best. As shown in the diagram below, each application intricately combines data curation and data ownership. It is clear that this has become an issue with initiatives like GDPR trying to give users ownership of their data, however, technical ownership (Web3) is better than legal ownership.
 
-<figure><img src="../.gitbook/assets/bitcache-do vs dc.drawio (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/bitcache-do vs dc.drawio (2) (1).png" alt=""><figcaption></figcaption></figure>
 
 
 
@@ -22,6 +22,12 @@ An example that illustrates this phenomenon clearly is Twitter. As a result of m
 
 In a Web3 world, your posts and data are onchain and you can take them wherever you go and use them from any app that curates the data in whatever way they want. For example, if you don't like the algorithm that Twitter is using to display posts to you, you can easily switch to another app which will have all the underlying data that Twitter does. Also Twitter loses their moat since any competitor will already have the same network effect that Twitter does from day 1 because the data in on a neutral layer that anyone can trust and use - not on Twitter's servers.
 
+<figure><img src="../.gitbook/assets/bitcache-do vs dc.drawio (3) (1).png" alt=""><figcaption></figcaption></figure>
+
+### Web3 (with BitCache)
+
+All the BitCache infrastructure does is add a **caching layer** to make moving between different apps cheaper and easier. Notice there is now an admin dashboard in the middle between the 2 apps that you can use to view ALL of your onchain data in one place and control the data the you own.
+
 <figure><img src="../.gitbook/assets/bitcache-do vs dc.drawio (3).png" alt=""><figcaption></figcaption></figure>
 
-Bitcoin wallets working this way is the baseline for Web 3. If simple wallets don’t work this way, then no Bitcoin application (which is a layer on top of the wallet) can.
+Bitcoin wallets working this way is the baseline for Web3. If simple wallets don’t work this way, then no Bitcoin application (which is a layer on top of the wallet) can.

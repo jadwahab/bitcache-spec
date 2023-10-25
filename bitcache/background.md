@@ -8,7 +8,7 @@ You can take your 12-word mnemonic/seed phrase from one wallet interface and imp
 
 The way this works is the new wallet client generates child keys from the mnemonic and then scans the entire blockchain for transaction outputs that use that address. Note that the enumeration technique used to generate child keys **must** be **standard** or else the transactions will not be found (since the keys will be different than the ones used onchain - not to mention gap limit issues and other limitations).
 
-You should be able to see how this gets much more complicated and expensive if blocks are much bigger than 1MB, especially if different scripts and onchain protocols are used (that current indexers don't scan or filter for).
+You should be able to see how this gets much more **complicated** and **expensive** if blocks are much bigger than 1MB, especially if different scripts and onchain protocols are used (that current indexers don't scan or filter for).
 
 
 
