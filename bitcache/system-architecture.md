@@ -13,7 +13,7 @@ With your onchain data, you have two options:
 2. **cache** transactions you need as they get settled onchain \
    _(CHEAP - only scales with your data usage)_
 
-<figure><img src="../.gitbook/assets/bitcache-sys arch.drawio (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/bitcache-sys arch.drawio (6).png" alt=""><figcaption></figcaption></figure>
 
 As shown in the diagram above, all of the interfaces you use to create new Bitcoin transactions - whether they are different wallet interfaces, different devices, or different Bitcoin applications - notify your BitCache of those transactions so that they are saved/cached to be used whenever and wherever you want, seamlessly.
 
