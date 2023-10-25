@@ -1,3 +1,8 @@
+---
+cover: https://cdn.hswstatic.com/gif/computer-cache.jpg
+coverY: 0
+---
+
 # BitCache
 
 BitCache brings a **native** **Web3** user experience to BSV by adding a caching layer for your onchain data.
@@ -8,4 +13,4 @@ This is similar to the UX with email. You can easily move across email clients s
 
 
 
-<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
