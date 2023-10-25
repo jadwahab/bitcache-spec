@@ -1,7 +1,6 @@
 # Table of contents
 
-* [Welcome!](README.md)
-* [BitCache](bitcache/README.md)
+* [BitCache](README.md)
   * [Background](bitcache/background.md)
   * [Data Curation Vs. Data Ownership](bitcache/data-curation-vs.-data-ownership.md)
   * [System Architecture](bitcache/system-architecture.md)
