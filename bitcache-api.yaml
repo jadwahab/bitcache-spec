@@ -1,9 +1,9 @@
 openapi: "3.0.0"
 info:
   description: |
-    The peer channels API used to provision a peer channel, to access a peer channel and to receive notifications related to peer channels.
+    The BitCache channels API used to provision a BitCache channel, to access a BitCache channel and to receive notifications related to BitCache channels.
   version: 1.0.0
-  title: Peer channels API
+  title: BitCache channels API
   license:
     name: MIT
 
@@ -22,7 +22,7 @@ paths:
       summary: General-purpose websocket
       description: |
         Subscribe to all websocket notifications for an account. This will provide all notifications
-        related to peer channels managed by the given account, and remove the need to subscribe to
+        related to BitCache channels managed by the given account, and remove the need to subscribe to
         a websocket for each channel individually.
 
         Authentication is performed using the query parameter ?token="master bearer token" which is the
@@ -31,7 +31,7 @@ paths:
 
         At present these notification types are supported:
 
-        Peer Channels notifications
+        BitCache Channels notifications
         - message_type: bsv.api.channels.notification
         - result: Peer channel notification (example below)
 
@@ -47,15 +47,15 @@ paths:
                 $ref: "#/components/schemas/GeneralNotification"
 
 
-  # Peer Channels APIs
+  # BitCache Channels APIs
 
   /api/v1/channel/manage/list:
     get:
-      summary: List all Peer Channels
+      summary: List all BitCache Channels
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Channel Management APIs
+        - BitCache Channels - Channel Management APIs
       responses:
         '200':
           description: Success
@@ -78,7 +78,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Channel Management APIs
+        - BitCache Channels - Channel Management APIs
       responses:
         '200':
           description: Success
@@ -92,7 +92,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Channel Management APIs
+        - BitCache Channels - Channel Management APIs
       responses:
         '200':
           description: Success
@@ -106,18 +106,18 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Channel Management APIs
+        - BitCache Channels - Channel Management APIs
       responses:
         '200':
           description: Success
 
   /api/v1/channel/manage/:
     post:
-      summary: Create a new Peer Channel
+      summary: Create a new BitCache Channel
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Channel Management APIs
+        - BitCache Channels - Channel Management APIs
       requestBody:
         content:
           application/json:
@@ -151,7 +151,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Token Management APIs
+        - BitCache Channels - Token Management APIs
       responses:
         '200':
           description: Success
@@ -165,7 +165,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Token Management APIs
+        - BitCache Channels - Token Management APIs
       responses:
         '200':
           description: Success
@@ -191,7 +191,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Token Management APIs
+        - BitCache Channels - Token Management APIs
       responses:
         '200':
           description: Success
@@ -205,7 +205,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Token Management APIs
+        - BitCache Channels - Token Management APIs
       requestBody:
         content:
           application/json:
@@ -240,7 +240,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Message management APIs
+        - BitCache Channels - Message management APIs
       description: |
         The payload is always written in the request body in
         binary encoded format but the 'Content-Type' header
@@ -266,7 +266,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Message management APIs
+        - BitCache Channels - Message management APIs
       responses:
         '200':
           description: Success
@@ -287,7 +287,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Message management APIs
+        - BitCache Channels - Message management APIs
       responses:
         '200':
           description: Success
@@ -325,7 +325,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Message management APIs
+        - BitCache Channels - Message management APIs
       requestBody:
         content:
           application/json:
@@ -343,7 +343,7 @@ paths:
       security:
         - BearerAuth: [ ]
       tags:
-        - Peer Channels - Message management APIs
+        - BitCache Channels - Message management APIs
       responses:
         '200':
           description: Success
@@ -360,7 +360,7 @@ paths:
       summary: Subscribe to websocket notifications for new messages
       security: [ ]
       tags:
-        - Peer Channels - Websocket API
+        - BitCache Channels - Websocket API
       responses:
         '200':
           description: Subscribe to websocket notifications for new messages
