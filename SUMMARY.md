@@ -5,10 +5,10 @@
   * [Data Curation Vs. Data Ownership](bitcache/data-curation-vs.-data-ownership.md)
   * [System Architecture](bitcache/system-architecture.md)
   * [Interoperability](bitcache/interoperability.md)
-* [Quick Start](quick-start.md)
 
 ## Reference
 
+* [Developer Integration](reference/developer-integration.md)
 * [API Reference](reference/api-reference.md)
 
 ***
