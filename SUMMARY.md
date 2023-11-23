@@ -8,8 +8,9 @@
 
 ## Reference
 
-* [Developer Integration](reference/developer-integration.md)
-* [API Reference](reference/api-reference.md)
+* [Developer Integration](reference/developer-integration/README.md)
+  * [API Reference](reference/developer-integration/api-reference.md)
+  * [BitCache Message Details](reference/developer-integration/bitcache-message-details.md)
 
 ***
 
