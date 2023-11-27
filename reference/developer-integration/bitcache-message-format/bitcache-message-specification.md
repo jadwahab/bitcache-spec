@@ -1,4 +1,4 @@
-# BitCache Message Details
+# BitCache Message Specification
 
 The BitCache message structure is one of length-delimited chunks of bytes with the following parts:
 

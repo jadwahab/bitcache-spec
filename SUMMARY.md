@@ -10,7 +10,8 @@
 
 * [Developer Integration](reference/developer-integration/README.md)
   * [API Reference](reference/developer-integration/api-reference.md)
-  * [BitCache Message Details](reference/developer-integration/bitcache-message-details.md)
+  * [BitCache Message Format](reference/developer-integration/bitcache-message-format/README.md)
+    * [BitCache Message Specification](reference/developer-integration/bitcache-message-format/bitcache-message-specification.md)
 
 ***
 
