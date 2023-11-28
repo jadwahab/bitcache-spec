@@ -19,11 +19,13 @@ As shown in the diagram above, all of the interfaces you use to create new Bitco
 
 
 
-### Admin Dashboard
+### Data Dashboard
 
 Since you now have all of your onchain transactions in one place, for the first time, you can have the ability to view (without necessarily controlling) all of your transactions in one dashboard or screen.
 
 In this dashboard, you can now see for instance that today you've created and/or received 24 payment transactions, 15 token transactions, 11 lockup transactions, 9 bSocial transactions, etc.
+
+This allows for the ability to view your data (transactions) from an "admin dashboard" where you can control everything in one place, as well as a "watch-only dashboard" where you can view everything but not control anything, or even go as granular as you like with difference permissions for different interfaces.
 
 This changes the paradigm from transactions being **platform-based** into being **function-based**. What this means is that since you can view and use your transactions from any interface, it doesn't matter that these transactions are "HandCash" or "RelayX" transactions, it only matters what function they serve, such as payment or token transactions.
 
